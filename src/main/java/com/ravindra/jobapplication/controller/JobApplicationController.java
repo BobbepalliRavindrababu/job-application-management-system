@@ -31,4 +31,11 @@ public class JobApplicationController {
         return ResponseEntity.ok(applications);
 
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<JobApplication> getApplicationById(@PathVariable Long id){
+        JobApplication application=jobApplicationService.getApplicationBYId(id);
+
+        return ResponseEntity.ok(application);
+    }
 }
