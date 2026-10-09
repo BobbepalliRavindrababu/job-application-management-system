@@ -1,7 +1,10 @@
 package com.ravindra.jobapplication.service;
 
 
+import com.ravindra.jobapplication.dto.JobApplicationResponseDTO;
+import com.ravindra.jobapplication.dto.JobApplicationRequestDTO;
 import com.ravindra.jobapplication.entity.JobApplication;
+import com.ravindra.jobapplication.mapper.JobApplicationMapper;
 import com.ravindra.jobapplication.repository.JobApplicationRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,38 +16,51 @@ import java.util.List;
 public class JobApplicationService {
 
     private final JobApplicationRepository jobApplicationRepository;
+    private final JobApplicationMapper jobApplicationMapper;
 
-    public JobApplicationService(JobApplicationRepository jobApplicationRepository){
+    public JobApplicationService(JobApplicationRepository jobApplicationRepository, JobApplicationMapper jobApplicationMapper){
         this.jobApplicationRepository=jobApplicationRepository;
+        this.jobApplicationMapper=jobApplicationMapper;
     }
 
-    public JobApplication createProfile(JobApplication application){
-        return jobApplicationRepository.save(application);
+    public JobApplicationResponseDTO createProfile(JobApplicationRequestDTO request){
+        JobApplication application=jobApplicationMapper.toEntity(request);
+        JobApplication savedApplication= jobApplicationRepository.save(application);
+        return jobApplicationMapper.toResponseDTO(savedApplication);
     }
 
-    public List<JobApplication> getALlAopplications(){
-        return jobApplicationRepository.findAll();
+    public List<JobApplicationResponseDTO> getALlApplications(){
+        return jobApplicationRepository.findAll()
+                .stream()
+                .map(jobApplicationMapper::toResponseDTO)
+                .toList();
     }
 
-    public JobApplication getApplicationBYId(Long id){
-        return jobApplicationRepository.findById(id)
+    public JobApplicationResponseDTO getApplicationBYId(Long id){
+        JobApplication application= jobApplicationRepository.findById(id)
                 .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Job Application not found with:"+id));
+
+        return jobApplicationMapper.toResponseDTO(application);
     }
 
-    public JobApplication updateAplication(Long id,JobApplication updatedApplication){
+    public JobApplicationResponseDTO updateAplication(Long id,JobApplicationRequestDTO requestDTO){
         JobApplication existiedApplication=jobApplicationRepository.findById(id)
                 .orElseThrow(()->
                         new ResponseStatusException(HttpStatus.NOT_FOUND,"job application is not Found with id:"+ id));
 
-        existiedApplication.setCompanyName(updatedApplication.getCompanyName());
+        jobApplicationMapper.updateEntity(requestDTO,existiedApplication);
 
-        existiedApplication.setJobTitle(updatedApplication.getJobTitle());
+        JobApplication application=jobApplicationRepository.save(existiedApplication);
 
-        existiedApplication.setStatus(updatedApplication.getStatus());
+        return jobApplicationMapper.toResponseDTO(existiedApplication);
 
-        existiedApplication.setAppliedDate(updatedApplication.getAppliedDate());
+    }
 
-        return jobApplicationRepository.save(existiedApplication);
+    public void deleteApplication(Long id){
+        JobApplication application=jobApplicationRepository.findById(id)
+                .orElseThrow(()->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND,"job application with this id:" + id));
 
+        jobApplicationRepository.delete(application);
     }
 }

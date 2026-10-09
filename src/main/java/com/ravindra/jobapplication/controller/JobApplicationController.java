@@ -1,5 +1,7 @@
 package com.ravindra.jobapplication.controller;
 
+import com.ravindra.jobapplication.dto.JobApplicationRequestDTO;
+import com.ravindra.jobapplication.dto.JobApplicationResponseDTO;
 import com.ravindra.jobapplication.entity.JobApplication;
 import com.ravindra.jobapplication.service.JobApplicationService;
 import org.springframework.http.HttpStatus;
@@ -18,31 +20,38 @@ public class JobApplicationController {
     }
 
     @PostMapping
-    public ResponseEntity<JobApplication> createApplication(@RequestBody JobApplication jobApplication){
-        JobApplication application=jobApplicationService.createProfile(jobApplication);
+    public ResponseEntity<JobApplicationResponseDTO> createApplication(@RequestBody JobApplicationRequestDTO request){
+        JobApplicationResponseDTO responseDTO =jobApplicationService.createProfile(request);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(application);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
     @GetMapping
-    public ResponseEntity<List<JobApplication>> getAllApplications(){
-        List<JobApplication> applications=jobApplicationService.getALlAopplications();
+    public ResponseEntity<List<JobApplicationResponseDTO>> getAllApplications(){
+        List<JobApplicationResponseDTO> applications=jobApplicationService.getALlApplications();
 
         return ResponseEntity.ok(applications);
 
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<JobApplication> getApplicationById(@PathVariable Long id){
-        JobApplication application=jobApplicationService.getApplicationBYId(id);
+    public ResponseEntity<JobApplicationResponseDTO> getApplicationById(@PathVariable Long id){
+        JobApplicationResponseDTO application=jobApplicationService.getApplicationBYId(id);
 
         return ResponseEntity.ok(application);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<JobApplication> updateApplication(@PathVariable Long id, @RequestBody JobApplication jobApplication){
-        JobApplication updatedApplication=jobApplicationService.updateAplication(id,jobApplication);
+    public ResponseEntity<JobApplicationResponseDTO> updateApplication(@PathVariable Long id, @RequestBody JobApplicationRequestDTO requestDTO){
+        JobApplicationResponseDTO updatedApplication=jobApplicationService.updateAplication(id,requestDTO);
 
         return ResponseEntity.ok(updatedApplication);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteApplication(@PathVariable Long id){
+        jobApplicationService.deleteApplication(id);
+
+        return ResponseEntity.noContent().build();
     }
 }
