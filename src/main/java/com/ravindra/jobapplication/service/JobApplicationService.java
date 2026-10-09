@@ -30,4 +30,21 @@ public class JobApplicationService {
         return jobApplicationRepository.findById(id)
                 .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Job Application not found with:"+id));
     }
+
+    public JobApplication updateAplication(Long id,JobApplication updatedApplication){
+        JobApplication existiedApplication=jobApplicationRepository.findById(id)
+                .orElseThrow(()->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND,"job application is not Found with id:"+ id));
+
+        existiedApplication.setCompanyName(updatedApplication.getCompanyName());
+
+        existiedApplication.setJobTitle(updatedApplication.getJobTitle());
+
+        existiedApplication.setStatus(updatedApplication.getStatus());
+
+        existiedApplication.setAppliedDate(updatedApplication.getAppliedDate());
+
+        return jobApplicationRepository.save(existiedApplication);
+
+    }
 }

@@ -38,4 +38,11 @@ public class JobApplicationController {
 
         return ResponseEntity.ok(application);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<JobApplication> updateApplication(@PathVariable Long id, @RequestBody JobApplication jobApplication){
+        JobApplication updatedApplication=jobApplicationService.updateAplication(id,jobApplication);
+
+        return ResponseEntity.ok(updatedApplication);
+    }
 }
