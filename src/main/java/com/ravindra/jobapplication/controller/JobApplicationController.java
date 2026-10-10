@@ -4,6 +4,7 @@ import com.ravindra.jobapplication.dto.JobApplicationRequestDTO;
 import com.ravindra.jobapplication.dto.JobApplicationResponseDTO;
 import com.ravindra.jobapplication.entity.JobApplication;
 import com.ravindra.jobapplication.service.JobApplicationService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class JobApplicationController {
     }
 
     @PostMapping
-    public ResponseEntity<JobApplicationResponseDTO> createApplication(@RequestBody JobApplicationRequestDTO request){
+    public ResponseEntity<JobApplicationResponseDTO> createApplication(@Valid @RequestBody JobApplicationRequestDTO request){
         JobApplicationResponseDTO responseDTO =jobApplicationService.createProfile(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
@@ -42,7 +43,7 @@ public class JobApplicationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<JobApplicationResponseDTO> updateApplication(@PathVariable Long id, @RequestBody JobApplicationRequestDTO requestDTO){
+    public ResponseEntity<JobApplicationResponseDTO> updateApplication(@PathVariable Long id,@Valid  @RequestBody JobApplicationRequestDTO requestDTO){
         JobApplicationResponseDTO updatedApplication=jobApplicationService.updateAplication(id,requestDTO);
 
         return ResponseEntity.ok(updatedApplication);
