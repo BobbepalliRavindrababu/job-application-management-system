@@ -6,6 +6,7 @@ import com.ravindra.jobapplication.dto.JobApplicationRequestDTO;
 import com.ravindra.jobapplication.entity.JobApplication;
 import com.ravindra.jobapplication.mapper.JobApplicationMapper;
 import com.ravindra.jobapplication.repository.JobApplicationRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,10 +24,12 @@ public class JobApplicationService {
         this.jobApplicationMapper=jobApplicationMapper;
     }
 
+    @Transactional
     public JobApplicationResponseDTO createProfile(JobApplicationRequestDTO request){
         JobApplication application=jobApplicationMapper.toEntity(request);
         JobApplication savedApplication= jobApplicationRepository.save(application);
         return jobApplicationMapper.toResponseDTO(savedApplication);
+
     }
 
     public List<JobApplicationResponseDTO> getALlApplications(){
