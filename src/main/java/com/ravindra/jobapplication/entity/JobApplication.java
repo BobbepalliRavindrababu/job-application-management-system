@@ -23,4 +23,11 @@ public class JobApplication {
     @Enumerated(EnumType.STRING)
     private ApplicationStatus status;
     private LocalDate appliedDate;
+
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="company_id")
+    private Company company;
+
+    public void setJobTitle(String softwareEngineer) {
+    }
 }
